@@ -62,7 +62,12 @@ io.on('connection', (socket) => {
         socket.in('administrator').emit('deletedVcard', vcard)
         socket.in(vcard.phone_number).emit('accountDeleted')
     })
-    socket.on('submitedTransaction', function (transaction) {
-        console.log(transaction)
+    socket.on('newTransaction', function (transaction) {
+        if(transaction.type=='C') socket.in(transaction.vcard).emit('accountCredited', transaction)
+        else if(transaction.payment_type=='VCARD') socket.in(transaction.payment_reference).emit('accountCredited', transaction)
+        socket.in('administrator').emit('newTransaction', transaction)
+    })
+    socket.on('updatedTransaction', function (transaction) {
+        socket.in('administrator').emit('updatedTransaction', transaction)
     })
 })
