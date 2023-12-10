@@ -62,4 +62,7 @@ io.on('connection', (socket) => {
         socket.in('administrator').emit('deletedVcard', vcard)
         socket.in(vcard.phone_number).emit('accountDeleted')
     })
+    socket.on('submitedTransaction', function (transaction) {
+        console.log(transaction)
+    })
 })
