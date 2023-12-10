@@ -40,22 +40,22 @@ io.on('connection', (socket) => {
             socket.in('administrator').emit('deleteCategory', category)
         }
     })
-    socket.on('insertedUser', function () {
-        socket.in('administrator').emit('usersUpdated')
+    socket.on('insertedAdmin', function () {
+        socket.in('administrator').emit('adminsUpdated')
     })
-    socket.on('updatedUser', function (user) {
-        socket.in('administrator').except(user.id).emit('usersUpdated')
-        socket.in(user.id).emit('updatedUser', user)
+    socket.on('updatedAdmin', function (user) {
+        socket.in('administrator').except(user.id).emit('adminsUpdated')
+        socket.in(user.id).emit('updatedAdmin', user)
     })
-    socket.on('deletedUser', function (user) {
-        console.log(user)
-        socket.in('administrator').except(user.id).emit('usersUpdated')
+    socket.on('deletedAdmin', function (user) {
+        socket.in('administrator').except(user.id).emit('adminsUpdated')
         socket.in(user.id).emit('accountDeleted', user)
     })
-
     socket.on('insertedVcard', function (user) {
-        console.log("insertedVcard")
         socket.in('administrator').emit('insertedVcard', user)
     })
-    
+    socket.on('updatedVcard', function (user) {
+        socket.in('administrator').emit('updatedVcard', user)
+        socket.in(vcard.phone_number).emit('updatedVcard', user)
+    })
 })
