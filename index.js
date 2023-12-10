@@ -49,18 +49,17 @@ io.on('connection', (socket) => {
     })
     socket.on('deletedAdmin', function (user) {
         socket.in('administrator').except(user.id).emit('adminsUpdated')
-        socket.in(user.id).emit('adminAccountDeleted', user)
+        socket.in(user.id).emit('accountDeleted')
     })
     socket.on('insertedVcard', function (user) {
         socket.in('administrator').emit('insertedVcard', user)
     })
     socket.on('updatedVcard', function (vcard) {
-        console.log(vcard.phone_number)
         socket.in('administrator').emit('updatedVcard', vcard)
         socket.in(vcard.phone_number).emit('updatedVcard', vcard)
     })
     socket.on('deletedVcard', function (vcard) {
         socket.in('administrator').emit('deletedVcard', vcard)
-        socket.in(vcard.phone_number).emit('vcardAccountDeleted', vcard)
+        socket.in(vcard.phone_number).emit('accountDeleted')
     })
 })
