@@ -14,11 +14,11 @@ io.on('connection', (socket) => {
     console.log(`client ${socket.id} has connected`)
 
     socket.on('loggedIn', function (user) {
-        socket.join(user.id)
+        socket.join(user.id.toString())
         if (user.user_type == 'A') {
             socket.join('administrator')
             console.log("admin logged in")
-        }
+        }else console.log(user.id)
     })
     socket.on('loggedOut', function (user) {
         socket.leave(user.id)
@@ -49,13 +49,18 @@ io.on('connection', (socket) => {
     })
     socket.on('deletedAdmin', function (user) {
         socket.in('administrator').except(user.id).emit('adminsUpdated')
-        socket.in(user.id).emit('accountDeleted', user)
+        socket.in(user.id).emit('adminAccountDeleted', user)
     })
     socket.on('insertedVcard', function (user) {
         socket.in('administrator').emit('insertedVcard', user)
     })
-    socket.on('updatedVcard', function (user) {
-        socket.in('administrator').emit('updatedVcard', user)
-        socket.in(vcard.phone_number).emit('updatedVcard', user)
+    socket.on('updatedVcard', function (vcard) {
+        console.log(vcard.phone_number)
+        socket.in('administrator').emit('updatedVcard', vcard)
+        socket.in(vcard.phone_number).emit('updatedVcard', vcard)
+    })
+    socket.on('deletedVcard', function (vcard) {
+        socket.in('administrator').emit('deletedVcard', vcard)
+        socket.in(vcard.phone_number).emit('vcardAccountDeleted', vcard)
     })
 })
