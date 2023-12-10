@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
         socket.leave('administrator')
         console.log("admin logged out")
     })
-
     socket.on('newCategory', (category) => {
         if (socket.rooms.has('administrator')) {
             socket.in('administrator').emit('newCategory', category);
@@ -41,12 +40,22 @@ io.on('connection', (socket) => {
             socket.in('administrator').emit('deleteCategory', category)
         }
     })
-    socket.on('insertedUser', function (user) {
-        socket.in('administrator').emit('insertedUser', user)
+    socket.on('insertedUser', function () {
+        socket.in('administrator').emit('usersUpdated')
     })
     socket.on('updatedUser', function (user) {
-        socket.in('administrator').except(user.id).emit('updatedUser', user)
+        socket.in('administrator').except(user.id).emit('usersUpdated')
         socket.in(user.id).emit('updatedUser', user)
     })
+    socket.on('deletedUser', function (user) {
+        console.log(user)
+        socket.in('administrator').except(user.id).emit('usersUpdated')
+        socket.in(user.id).emit('accountDeleted', user)
+    })
 
+    socket.on('insertedVcard', function (user) {
+        console.log("insertedVcard")
+        socket.in('administrator').emit('insertedVcard', user)
+    })
+    
 })
